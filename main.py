@@ -100,68 +100,66 @@ def get_formatted_date(Datedata):
 #             print(ValueError)
 #             return None
 
-df = pd.DataFrame(
-    columns=['name', 'Salary from', 'Position Type', 'Salary period', 'Salary to', 'posted', 'imageText', 'address',
-             'Description'])
+columHeader=['name', 'Salary from', 'Position Type', 'Salary period', 'Salary to','posted','imageText','imageUrl','address', 'Description']
+df = pd.DataFrame(columns=columHeader)
 data_list = []
 print("Number of ads are :", len(AdUrlList))
-imageName = 1
-# imageText=""
+imageName=1
+imageText=""
 for addUrl in AdUrlList:
     print(addUrl)
     driver.get(addUrl)
-    name_ower = "*//div[@class='eHFQs']"
+    name_ower="*//div[@class='eHFQs']"
     sdetils = "*//span[@data-aut-id='value_salary_from']"
     jtypeDetails = "*//span[@data-aut-id='value_job_type']"
     mperiodDetails = "*//span[@data-aut-id='value_salary_period']"
     SToPeriodDetails = "*//span[@data-aut-id='value_salary_to']"
     Description = "*//div[@data-aut-id='itemDescriptionContent']"
-    date_of_post = "*//div[@data-aut-id='itemCreationDate']"
-    adrees = "*//div//span[@class='_1RkZP']"
-
+    date_of_post="*//div[@data-aut-id='itemCreationDate']"
+    adrees="*//div//span[@class='_1RkZP']"
+    
     try:
-        owerdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, name_ower))).text
-        datedata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, date_of_post))).text
-        addressdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, adrees))).text
-        sdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, sdetils))).text
-        #     sdata = driver.find_element(By.XPATH, sdetils).text
-        jdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, jtypeDetails))).text
-        #     jdata = driver.find_element(By.XPATH, jtypeDetails).text
-        mdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, mperiodDetails))).text
-        #     mdata = driver.find_element(By.XPATH, mperiodDetails).text
-        Stopdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, SToPeriodDetails))).text
-        #     Stopdata = driver.find_element(By.XPATH, SToPeriodDetails).text
-        Descdata = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Description))).text
-        datedata = str(get_formatted_date(datedata))  # read these code understand here change into string
+        owerdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,name_ower))).text
+        datedata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, date_of_post))).text
+        addressdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,adrees))).text
+        sdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, sdetils))).text
+    #     sdata = driver.find_element(By.XPATH, sdetils).text
+        jdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, jtypeDetails))).text
+    #     jdata = driver.find_element(By.XPATH, jtypeDetails).text
+        mdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, mperiodDetails))).text
+    #     mdata = driver.find_element(By.XPATH, mperiodDetails).text
+        Stopdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, SToPeriodDetails))).text
+    #     Stopdata = driver.find_element(By.XPATH, SToPeriodDetails).text
+        Descdata=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Description))).text
+        datedata= str(get_formatted_date(datedata)) # read these code understand here change into string 
         try:
-            image_url = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, "*//div//figure/img"))).get_attribute('src')
-            imageText = extract_text_from_image(image_url, name=str(imageName))
-            imageName += 1
+            image_url=WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "*//div//figure/img"))).get_attribute('src')
+            imageText=extract_text_from_image(image_url, name=str(imageName))
+            imageName+=1
         except:
-            imageText = "not found"
-        print(datedata, "image text : ", imageText)
+            image_url="not found"
+            imageText="not found"
+        print(datedata,"image text : " ,imageText)
     except:
         print("add is not related to hdfcank it is another type need to make logic according it data field")
         continue
-    #   Descdata = driver.find_element(By.XPATH, Description).text
+#   Descdata = driver.find_element(By.XPATH, Description).text
     randomdelay(1, 3)
-    saveData = {
-        'name': owerdata,
+    saveData={
+        'name':owerdata,
         'Salary from': sdata,
         'Position Type': jdata,
         'Salary period': mdata,
         'Salary to': Stopdata,
-        'posted': datedata,
-        'imageText': imageText,
-        'adress': addressdata,
+        'posted':datedata,
+        'imageText':imageText,
+        'imageUrl':image_url,
+        'adress':addressdata,
         'Description': Descdata
     }
     print(saveData)
     data_list.append(saveData)
     randomdelay(2, 3)
     # below colum keys must match which updated now
-    df = pd.DataFrame(data_list,
-                      columns=['name', 'Salary from', 'Position Type', 'Salary period', 'Salary to', 'posted',
-                               'imageText', 'adress', 'Description'])
+    df = pd.DataFrame(data_list, columns=columHeader)
     df.to_excel('output.xlsx', index=False)
