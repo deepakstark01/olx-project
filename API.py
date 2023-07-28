@@ -35,7 +35,7 @@ pages=20
 fulldata=[]
 for page in range(0,pages):
     data=get_data(str(page)) # APi call getting page data 
-    # extract data from data from page 
+    # extract data from data from page   use json you can get data of response 
     description = data['data'][0]['description']
     # ownnerName = data['data'][1]['description']
-    print(description)
+    print(" Page : ", page, " \n\n" ,description)
